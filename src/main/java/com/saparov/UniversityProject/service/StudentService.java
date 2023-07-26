@@ -2,6 +2,7 @@ package com.saparov.UniversityProject.service;
 
 
 import com.saparov.UniversityProject.entity.Student;
+import com.saparov.UniversityProject.enums.Faculty;
 import com.saparov.UniversityProject.exception.NotFoundException;
 import com.saparov.UniversityProject.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -34,10 +36,22 @@ public class StudentService {
         return response;
     }
 
+    public List<Student> findByFaculty(Faculty faculty){
+       return studentRepository.findByFaculty(faculty);
+    }
+
+
     public Student getStudentById(Long id){
         return studentRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Student not found with id: " + id));
     }
+
+    public Student getStudentByFirstname(String firstname){
+        return studentRepository.findByFirstname(firstname).orElseThrow(() ->
+                new NotFoundException("Student not found with firstname: " + firstname));
+    }
+
+
 
     @Transactional
     public Student createStudent(Student student){
