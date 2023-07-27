@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -34,9 +35,18 @@ public class TeacherService {
         return response;
     }
 
+    public List<Teacher> findBySubject(String subject){
+        return teacherRepository.findBySubject(subject);
+    }
+
     public Teacher getTeacherById(Long id){
         return teacherRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Teacher not found with id: " + id));
+    }
+
+    public Teacher getTeacherByFirstname(String firstname){
+        return teacherRepository.findByFirstname(firstname).orElseThrow(() ->
+                new NotFoundException("Teacher not found with firstname: " + firstname));
     }
 
     @Transactional

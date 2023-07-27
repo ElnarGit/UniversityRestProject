@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,32 +32,45 @@ public class TeacherController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/subject")
+    public ResponseEntity<List<Teacher>> findBySubject(@RequestParam("subject") String subject){
+        List<Teacher> teachers = teacherService.findBySubject(subject);
+        return new ResponseEntity<>(teachers, HttpStatus.OK);
+
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getTeacherById(@PathVariable("id")Long id){
-       return new ResponseEntity<>(teacherService.getTeacherById(id),
-               HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public Teacher getTeacherById(@PathVariable("id")Long id){
+       return teacherService.getTeacherById(id);
+    }
+
+    @GetMapping("/firstname")
+    @ResponseStatus(HttpStatus.OK)
+    public Teacher getTeacherByFirstname(@RequestParam("firstname")String firstname){
+        return teacherService.getTeacherByFirstname(firstname);
     }
 
     @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Teacher> createTeacher(@RequestBody Teacher teacher){
-        return new ResponseEntity<>(teacherService.createTeacher(teacher),
-                HttpStatus.CREATED);
+    public Teacher createTeacher(@RequestBody Teacher teacher){
+        return teacherService.createTeacher(teacher);
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable("id") Long id, @RequestBody Teacher teacher){
-        return new ResponseEntity<>(teacherService.updateTeacher(id, teacher),
-                HttpStatus.OK);
+    public Teacher updateTeacher(@PathVariable("id") Long id, @RequestBody Teacher teacher){
+        return teacherService.updateTeacher(id,teacher);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteTeacher(@PathVariable("id") Long id){
+    public String deleteTeacher(@PathVariable("id") Long id){
        teacherService.deleteTeacher(id);
 
-       return new ResponseEntity<>("Teacher deleted",
-               HttpStatus.OK);
+       return "Teacher deleted";
     }
 }
