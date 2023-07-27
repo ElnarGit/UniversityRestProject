@@ -3,6 +3,7 @@ package com.saparov.UniversityProject.controller;
 
 import com.saparov.UniversityProject.entity.Student;
 import com.saparov.UniversityProject.enums.Faculty;
+import com.saparov.UniversityProject.exception.NotFoundException;
 import com.saparov.UniversityProject.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -34,10 +35,10 @@ public class StudentController {
                HttpStatus.OK);
     }
 
-    @GetMapping("/faculty")
-    public ResponseEntity<List<Student>> getStudentByFaculty(@RequestParam("faculty") Faculty faculty) {
-        List<Student> students = studentService.findByFaculty(faculty);
-        return new ResponseEntity<>(students, HttpStatus.OK);
+    @GetMapping("/course")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Student> getStudentByCourse(@RequestParam("course") Integer course) {
+        return studentService.findByCourse(course);
     }
 
     @GetMapping("/{id}")

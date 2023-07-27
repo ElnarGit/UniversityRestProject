@@ -36,7 +36,12 @@ public class TeacherService {
     }
 
     public List<Teacher> findBySubject(String subject){
-        return teacherRepository.findBySubject(subject);
+        List<Teacher> teachers = teacherRepository.findBySubject(subject);
+
+        if(teachers.isEmpty()){
+            throw new NotFoundException("Teacher not found with subject: " + subject);
+        }
+        return teachers;
     }
 
     public Teacher getTeacherById(Long id){

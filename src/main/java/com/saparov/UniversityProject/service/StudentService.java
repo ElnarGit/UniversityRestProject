@@ -36,8 +36,13 @@ public class StudentService {
         return response;
     }
 
-    public List<Student> findByFaculty(Faculty faculty){
-       return studentRepository.findByFaculty(faculty);
+    public List<Student> findByCourse(Integer course){
+       List<Student> students = studentRepository.findByCourse(course);
+
+       if(students.isEmpty()){
+           throw new NotFoundException("Student not found with course: " + course);
+       }
+       return students;
     }
 
 

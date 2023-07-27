@@ -33,10 +33,9 @@ public class TeacherController {
     }
 
     @GetMapping("/subject")
-    public ResponseEntity<List<Teacher>> findBySubject(@RequestParam("subject") String subject){
-        List<Teacher> teachers = teacherService.findBySubject(subject);
-        return new ResponseEntity<>(teachers, HttpStatus.OK);
-
+    @ResponseStatus(HttpStatus.OK)
+    public List<Teacher> findBySubject(@RequestParam("subject") String subject){
+        return teacherService.findBySubject(subject);
     }
 
     @GetMapping("/{id}")
