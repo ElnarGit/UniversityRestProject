@@ -46,7 +46,7 @@ public class TeacherController {
 
     @GetMapping("/firstname")
     @ResponseStatus(HttpStatus.OK)
-    public Teacher getTeacherByFirstname(@RequestParam("firstname")String firstname){
+    public List<Teacher> getTeacherByFirstname(@RequestParam("firstname")String firstname){
         return teacherService.getTeacherByFirstname(firstname);
     }
 

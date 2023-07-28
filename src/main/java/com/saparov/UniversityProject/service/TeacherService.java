@@ -4,6 +4,7 @@ package com.saparov.UniversityProject.service;
 import com.saparov.UniversityProject.entity.Teacher;
 import com.saparov.UniversityProject.exception.NotFoundException;
 import com.saparov.UniversityProject.repository.TeacherRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,18 +50,23 @@ public class TeacherService {
                 new NotFoundException("Teacher not found with id: " + id));
     }
 
-    public Teacher getTeacherByFirstname(String firstname){
-        return teacherRepository.findByFirstname(firstname).orElseThrow(() ->
-                new NotFoundException("Teacher not found with firstname: " + firstname));
+    public List<Teacher> getTeacherByFirstname(String firstname){
+        List<Teacher> teachers = teacherRepository.findByFirstname(firstname);
+
+        if(teachers.isEmpty()){
+            throw new NotFoundException("Teacher not found with firstname: " + firstname);
+        }
+        return teachers;
+
     }
 
     @Transactional
-    public Teacher createTeacher(Teacher teacher){
+    public Teacher createTeacher(@Valid Teacher teacher){
         return teacherRepository.save(teacher);
     }
 
     @Transactional
-    public Teacher updateTeacher(Long id, Teacher teacher){
+    public Teacher updateTeacher(Long id,@Valid Teacher teacher){
         Teacher updateTeacher = teacherRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Teacher not found with id: " + id));
 

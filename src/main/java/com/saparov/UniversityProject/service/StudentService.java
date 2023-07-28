@@ -2,9 +2,9 @@ package com.saparov.UniversityProject.service;
 
 
 import com.saparov.UniversityProject.entity.Student;
-import com.saparov.UniversityProject.enums.Faculty;
 import com.saparov.UniversityProject.exception.NotFoundException;
 import com.saparov.UniversityProject.repository.StudentRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,20 +51,24 @@ public class StudentService {
                 new NotFoundException("Student not found with id: " + id));
     }
 
-    public Student getStudentByFirstname(String firstname){
-        return studentRepository.findByFirstname(firstname).orElseThrow(() ->
-                new NotFoundException("Student not found with firstname: " + firstname));
+    public List<Student> getStudentByFirstname(String firstname){
+        List<Student> students = studentRepository.findByFirstname(firstname);
+
+        if(students.isEmpty()){
+            throw new NotFoundException("Student not found with firstname: " + firstname);
+        }
+        return students;
     }
 
 
 
     @Transactional
-    public Student createStudent(Student student){
+    public Student createStudent(@Valid Student student){
         return studentRepository.save(student);
     }
 
     @Transactional
-    public Student updateStudent(Long id, Student student){
+    public Student updateStudent(Long id, @Valid Student student){
         Student updateStudent = studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Student not found with id: " + id));
 
