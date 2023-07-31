@@ -4,7 +4,6 @@ package com.saparov.UniversityProject.service;
 import com.saparov.UniversityProject.entity.Student;
 import com.saparov.UniversityProject.exception.NotFoundException;
 import com.saparov.UniversityProject.repository.StudentRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +22,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     public Map<String, Object> getAllStudents(Pageable pageable){
-
         Map<String, Object> response = new HashMap<>();
-
         Page<Student> studentPage = studentRepository.findAll(pageable);
 
         response.put("products",   studentPage.getContent());
@@ -36,41 +33,29 @@ public class StudentService {
         return response;
     }
 
-    public List<Student> findByCourse(Integer course){
-       List<Student> students = studentRepository.findByCourse(course);
-
-       if(students.isEmpty()){
-           throw new NotFoundException("Student not found with course: " + course);
-       }
-       return students;
-    }
-
-
     public Student getStudentById(Long id){
         return studentRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Student not found with id: " + id));
     }
 
+    public List<Student> getStudentByCourse(Integer course){
+       List<Student> students = studentRepository.findByCourse(course);
+       return students;
+    }
+
     public List<Student> getStudentByFirstname(String firstname){
         List<Student> students = studentRepository.findByFirstname(firstname);
-
-        if(students.isEmpty()){
-            throw new NotFoundException("Student not found with firstname: " + firstname);
-        }
         return students;
     }
 
-
-
     @Transactional
-    public Student createStudent(@Valid Student student){
+    public Student createStudent(Student student){
         return studentRepository.save(student);
     }
 
     @Transactional
-    public Student updateStudent(Long id, @Valid Student student){
-        Student updateStudent = studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Student not found with id: " + id));
+    public Student updateStudent(Long id, Student student){
+        Student updateStudent = getStudentById(id);
 
         updateStudent.setFirstname(student.getFirstname());
         updateStudent.setLastname(student.getLastname());
@@ -84,9 +69,7 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(Long id){
-        studentRepository.findById(id)
-                        .orElseThrow(() ->  new NotFoundException("Student not found with id: " + id));
-
-        studentRepository.deleteById(id);
+        Student student = getStudentById(id);
+        studentRepository.delete(student);
     }
 }

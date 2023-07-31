@@ -3,6 +3,7 @@ package com.saparov.UniversityProject.controller;
 
 import com.saparov.UniversityProject.entity.Teacher;
 import com.saparov.UniversityProject.service.TeacherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -32,16 +35,16 @@ public class TeacherController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/subject")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Teacher> findBySubject(@RequestParam("subject") String subject){
-        return teacherService.findBySubject(subject);
-    }
-
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Teacher getTeacherById(@PathVariable("id")Long id){
-       return teacherService.getTeacherById(id);
+        return teacherService.getTeacherById(id);
+    }
+
+    @GetMapping("/subject")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Teacher> findBySubject(@RequestParam("subject") String subject){
+        return teacherService.getTeacherBySubject(subject);
     }
 
     @GetMapping("/firstname")
@@ -51,16 +54,24 @@ public class TeacherController {
     }
 
     @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public Teacher createTeacher(@RequestBody Teacher teacher){
-        return teacherService.createTeacher(teacher);
+    public ResponseEntity<Teacher> createTeacher(@RequestBody @Valid Teacher teacher){
+        Teacher createdTeacher = teacherService.createTeacher(teacher);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdTeacher.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(createdTeacher);
+
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public Teacher updateTeacher(@PathVariable("id") Long id, @RequestBody Teacher teacher){
+    public Teacher updateTeacher(@PathVariable("id") Long id, @RequestBody @Valid Teacher teacher){
         return teacherService.updateTeacher(id,teacher);
     }
 

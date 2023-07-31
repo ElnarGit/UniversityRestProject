@@ -1,7 +1,6 @@
 package com.saparov.UniversityProject.entity;
 
 
-import com.saparov.UniversityProject.enums.Faculty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -24,8 +23,9 @@ public class Student extends Person{
     @Max(value = 4, message = "Course cannot be greater than 4")
     private Integer course;
 
-    @Column(name = "faculty")
+
     @NotNull(message = "Faculty must not be empty")
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 }
